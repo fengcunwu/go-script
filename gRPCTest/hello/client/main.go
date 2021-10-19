@@ -1,4 +1,5 @@
 package main
+
 import (
 	pb "github.com/go-script/gRPCTest/proto" // 引入proto包
 	"golang.org/x/net/context"
@@ -30,5 +31,5 @@ func main() {
 		grpclog.Fatalln(err)
 	}
 
-	grpclog.Println(res.Message)
+	grpclog.Infoln(res.Message)
 }

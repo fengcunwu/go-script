@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"script-go-demo/jsonTest"
+	"github.com/go-script/jsonTest"
 	"sync"
 	"time"
 )

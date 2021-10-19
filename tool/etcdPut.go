@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"script-go-demo/etcdTest"
+	"github.com/go-script/etcdTest"
 	"strconv"
 	"time"
 )
