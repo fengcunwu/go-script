@@ -31,5 +31,6 @@ func main() {
 		grpclog.Fatalln(err)
 	}
 
+
 	grpclog.Infoln(res.Message)
 }
