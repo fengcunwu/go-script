@@ -5,6 +5,7 @@
 *.so
 *.dylib
 .idea
+go-script
 
 # Test binary, built with `go test -c`
 *.test

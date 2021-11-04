@@ -1,4 +1,4 @@
-package interview
+package main
 
 import (
 	"fmt"
@@ -22,14 +22,15 @@ func CountRune(strs []string) Set {
 
 // CountRuneAsync 异步统计字符串数组中每个字符串的格式，count表示可以开启的线程数目
 func CountRuneAsync(strs []string, count int) Set {
+	worker := make(chan struct{}, count)
 	ch := make(chan map[rune]int, count)
 	result := make(chan map[rune]int, 1)
 	temp := make(map[rune]int)
 	var wg sync.WaitGroup
-
 	for _, str := range strs {
 		wg.Add(1)
-		go Producer(&wg, ch, str)
+		worker <- struct {}{}
+		go Producer(&wg, ch, worker, str)
 	}
 
 	go Consumer(ch, result)
@@ -43,12 +44,13 @@ func CountRuneAsync(strs []string, count int) Set {
 	return temp
 }
 
-func Producer(wg *sync.WaitGroup, ch chan map[rune]int, str string) {
+func Producer(wg *sync.WaitGroup, ch chan map[rune]int, worker chan struct{}, str string) {
 	result := make(map[rune]int)
 	for _, char := range str{
 		result[char]++
 	}
 	ch <- result
+	<-worker
 	wg.Done()
 }
 
@@ -67,28 +69,30 @@ func Consumer(ch chan map[rune]int, result chan map[rune]int) {
 	result <- res
 }
 
-//func main() {
-//	ch := make(chan map[rune]int, 2)
-//
-//	result := make(chan map[rune]int, 1)
-//
-//
-//	wg := sync.WaitGroup{}
-//
-//	for _, str := range []string{"aaa", "abc", "ddd", "ddddd"} {
-//		wg.Add(1)
-//		go Producer(&wg, ch, str)
-//	}
-//	go Consumer(ch, result)
-//
-//	wg.Wait()
-//	close(ch)
-//
-//	select {
-//	case res := <- result:
-//		log.Println(res)
-//	}
-//}
+func main() {
+	//ch := make(chan map[rune]int, 2)
+	//
+	//result := make(chan map[rune]int, 1)
+	//
+	//
+	//wg := sync.WaitGroup{}
+	//
+	//for _, str := range []string{"aaa", "abc", "ddd", "ddddd"} {
+	//	wg.Add(1)
+	//	go Producer(&wg, ch, str)
+	//}
+	//go Consumer(ch, result)
+	//
+	//wg.Wait()
+	//close(ch)
+	//
+	//select {
+	//case res := <- result:
+	//	log.Println(res)
+	//}
+
+	fmt.Println(CountRuneAsync([]string{"aaa", "bb", "c", "ddddd"}, 3))
+}
 
 
 // 2, 三个线程按顺序打印 cat dog pig 10次

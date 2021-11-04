@@ -1,22 +1,22 @@
 package main
 
 import (
+	"fmt"
 	pb "github.com/go-script/gRPCTest/proto" // 引入proto包
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/grpclog"
 )
 
 const (
 	// Address gRPC服务地址
-	Address = "127.0.0.1:50052"
+	Address = "127.0.0.1:8080"
 )
 
 func main() {
 	// 连接
 	conn, err := grpc.Dial(Address, grpc.WithInsecure())
 	if err != nil {
-		grpclog.Fatalln(err)
+		panic(err)
 	}
 	defer conn.Close()
 
@@ -24,13 +24,13 @@ func main() {
 	c := pb.NewHelloClient(conn)
 
 	// 调用方法
-	req := &pb.HelloRequest{Name: "gRPC"}
+	req := &pb.HelloRequest{Name: "wfc"}
 	res, err := c.SayHello(context.Background(), req)
 
 	if err != nil {
-		grpclog.Fatalln(err)
+		panic(err)
 	}
 
 
-	grpclog.Infoln(res.Message)
+	fmt.Println(res.Message)
 }

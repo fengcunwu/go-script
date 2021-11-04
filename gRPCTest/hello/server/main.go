@@ -5,15 +5,11 @@ import (
 	pb "github.com/go-script/gRPCTest/proto"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/grpclog"
 	"net"
 )
 
-const Address = "127.0.0.1:50052"
 
 type helloService struct {}
-
-var HelloService = helloService{}
 
 
 func (h helloService) SayHello (ctx context.Context, input *pb.HelloRequest) (*pb.HelloResponse, error) {
@@ -24,17 +20,16 @@ func (h helloService) SayHello (ctx context.Context, input *pb.HelloRequest) (*p
 
 
 func main() {
-	listen, err := net.Listen("tcp", Address)
+	listen, err := net.Listen("tcp", ":8080")
 	if err != nil {
-		grpclog.Error(err.Error())
+		panic(err)
 	}
 
 	s := grpc.NewServer()
 
-	pb.RegisterHelloServer(s, HelloService)
+	pb.RegisterHelloServer(s, &helloService{})
 
-	grpclog.Infoln("Listen on %s" +  Address)
-
+	fmt.Println("listen: 8080")
 	if err := s.Serve(listen); err != nil {
 		panic(err)
 	}
